@@ -8,8 +8,9 @@
         body {
             font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
@@ -28,6 +29,9 @@
         button {
             margin-right: 10px;
         }
+        .download-link {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -38,6 +42,10 @@
         <button onclick="decodeText()">Decode</button>
         <h3>Result:</h3>
         <textarea id="resultText" readonly></textarea>
+        <div class="download-link">
+            <h2>Download Text Encoder/Decoder App</h2>
+            <p><a href="app-release.apk" download>Click here to download the APK</a></p>
+        </div>
     </div>
 
     <script>

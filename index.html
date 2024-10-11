@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Encoder/Decoder</title>
+    <title>Text Encoder/Decoder and Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,7 +11,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
         }
@@ -20,6 +20,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
         textarea {
             width: 100%;
@@ -30,6 +31,9 @@
             margin-right: 10px;
         }
         .download-link {
+            margin-top: 20px;
+        }
+        canvas {
             margin-top: 20px;
         }
     </style>
@@ -48,7 +52,18 @@
         </div>
     </div>
 
+    <h2>Play the Game!</h2>
+    <audio id="backgroundMusic" src="main.mp3" loop autoplay>
+        Your browser does not support the audio element.
+    </audio>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
     <script>
+        // Background music control
+        const backgroundMusic = document.getElementById("backgroundMusic");
+        backgroundMusic.volume = 0.5;
+
+        // Encoding and decoding functions
         function encodeText() {
             const input = document.getElementById("inputText").value;
             const encoded = btoa(input);
@@ -64,6 +79,19 @@
                 alert("Invalid input for decoding!");
             }
         }
+
+        // Placeholder for game logic - You will need to implement the game using JavaScript (e.g., Phaser.js)
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Simple example: Drawing a square to test the canvas
+        function draw() {
+            ctx.fillStyle = "#FF0000";
+            ctx.fillRect(0, 0, 800, 600);
+        }
+
+        draw(); // Call this to test the canvas drawing
     </script>
 </body>
 </html>
+

@@ -1,115 +1,142 @@
-// A simple JavaScript game for a Hide and Seek maze
-// This game will use a canvas element to draw the maze and player
+// Chronicles of the Multiverse
 
-// Set up the canvas and context
+// Initialize Canvas
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Player properties
-const player = {
-  x: 50,
-  y: 50,
-  width: 20,
-  height: 20,
-  color: 'blue',
-  speed: 5
-};
+// Game Constants
+const UNIVERSE_COUNT = 3; // Number of parallel universes
 
-// Obstacles representing the maze
-const obstacles = [
-  { x: 100, y: 0, width: 20, height: 300 },
-  { x: 200, y: 150, width: 300, height: 20 },
-  { x: 400, y: 0, width: 20, height: 300 },
-  { x: 300, y: 300, width: 20, height: 200 }
-];
-
-// Goal to reach
-const goal = {
-  x: 750,
-  y: 550,
-  width: 30,
-  height: 30,
-  color: 'green'
-};
-
-// Handle player movement
-let keys = {};
-window.addEventListener('keydown', (e) => {
-  keys[e.key] = true;
-});
-window.addEventListener('keyup', (e) => {
-  keys[e.key] = false;
-});
-
-function updatePlayerPosition() {
-  if (keys['ArrowUp']) player.y -= player.speed;
-  if (keys['ArrowDown']) player.y += player.speed;
-  if (keys['ArrowLeft']) player.x -= player.speed;
-  if (keys['ArrowRight']) player.x += player.speed;
-
-  // Prevent player from moving out of bounds
-  player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
-  player.y = Math.max(0, Math.min(canvas.height - player.height, player.y));
+// Utility Functions
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
 }
 
-function checkCollisions() {
-  // Check for collisions with obstacles
-  for (let obstacle of obstacles) {
-    if (
-      player.x < obstacle.x + obstacle.width &&
-      player.x + player.width > obstacle.x &&
-      player.y < obstacle.y + obstacle.height &&
-      player.y + player.height > obstacle.y
-    ) {
-      // Simple collision response: stop player movement
-      if (keys['ArrowUp']) player.y += player.speed;
-      if (keys['ArrowDown']) player.y -= player.speed;
-      if (keys['ArrowLeft']) player.x += player.speed;
-      if (keys['ArrowRight']) player.x -= player.speed;
+// Class Definitions
+
+// Universe Class
+class Universe {
+  constructor(id) {
+    this.id = id;
+    this.laws = this.generateLaws();
+    this.timeline = [];
+    this.entities = [];
+  }
+
+  generateLaws() {
+    // Procedurally generate the laws of physics for this universe
+    return {
+      gravity: Math.random() * 9.8,
+      speedOfLight: Math.random() * 300000,
+      dimensions: getRandomInt(10) + 1,
+    };
+  }
+
+  addEntity(entity) {
+    this.entities.push(entity);
+  }
+
+  update() {
+    // Update the universe state
+    this.entities.forEach(entity => entity.update(this.laws));
+  }
+}
+
+// Entity Class
+class Entity {
+  constructor(name) {
+    this.name = name;
+    this.position = { x: getRandomInt(canvas.width), y: getRandomInt(canvas.height) };
+  }
+
+  update(laws) {
+    // Update entity based on universe laws
+    this.position.x += (Math.random() - 0.5) * laws.gravity;
+    this.position.y += (Math.random() - 0.5) * laws.gravity;
+  }
+
+  render(ctx) {
+    // Render the entity on the canvas
+    ctx.fillStyle = 'white';
+    ctx.fillRect(this.position.x, this.position.y, 5, 5);
+  }
+}
+
+// Player Class
+class Player extends Entity {
+  constructor(name) {
+    super(name);
+    this.multiverseKnowledge = 0;
+  }
+
+  makeChoice(choice) {
+    // Quantum choice mechanics
+    if (choice === 'explore') {
+      this.multiverseKnowledge += 1;
+    } else if (choice === 'contemplate') {
+      this.multiverseKnowledge += 2;
     }
   }
 }
 
-function checkGoalReached() {
-  if (
-    player.x < goal.x + goal.width &&
-    player.x + player.width > goal.x &&
-    player.y < goal.y + goal.height &&
-    player.y + player.height > goal.y
-  ) {
-    alert('You reached the goal!');
-    // Reset player position
-    player.x = 50;
-    player.y = 50;
+// Game Class
+class Game {
+  constructor() {
+    this.universes = [];
+    this.player = new Player('Traveler');
+    this.initUniverses();
+    this.gameLoop = this.gameLoop.bind(this);
+    this.start();
+  }
+
+  initUniverses() {
+    for (let i = 0; i < UNIVERSE_COUNT; i++) {
+      let universe = new Universe(i);
+      universe.addEntity(this.player);
+      this.universes.push(universe);
+    }
+  }
+
+  start() {
+    // Start the game loop
+    requestAnimationFrame(this.gameLoop);
+  }
+
+  gameLoop() {
+    // Clear Canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Update and Render Universes
+    this.universes.forEach(universe => {
+      universe.update();
+      universe.entities.forEach(entity => entity.render(ctx));
+    });
+
+    // Check for Game End Condition
+    if (this.player.multiverseKnowledge >= 10) {
+      this.endGame();
+    } else {
+      // Continue the game loop
+      requestAnimationFrame(this.gameLoop);
+    }
+  }
+
+  endGame() {
+    // Display ending
+    ctx.fillStyle = 'white';
+    ctx.font = '30px Arial';
+    ctx.fillText('You have unraveled the secrets of the multiverse!', 50, canvas.height / 2);
   }
 }
 
-function draw() {
-  // Clear the canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Draw player
-  ctx.fillStyle = player.color;
-  ctx.fillRect(player.x, player.y, player.width, player.height);
-
-  // Draw obstacles
-  ctx.fillStyle = 'red';
-  for (let obstacle of obstacles) {
-    ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+// Event Listener for Player Choices
+document.addEventListener('keydown', event => {
+  if (event.code === 'KeyE') {
+    game.player.makeChoice('explore');
+  } else if (event.code === 'KeyC') {
+    game.player.makeChoice('contemplate');
   }
+});
 
-  // Draw goal
-  ctx.fillStyle = goal.color;
-  ctx.fillRect(goal.x, goal.y, goal.width, goal.height);
-}
-
-function gameLoop() {
-  updatePlayerPosition();
-  checkCollisions();
-  checkGoalReached();
-  draw();
-  requestAnimationFrame(gameLoop);
-}
-
-// Start the game loop
-gameLoop();
+// Instantiate and Start the Game
+const game = new Game();

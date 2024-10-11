@@ -34,6 +34,7 @@
             margin-top: 20px;
         }
         canvas {
+            border: 1px solid black;
             margin-top: 20px;
         }
     </style>
@@ -79,19 +80,10 @@
                 alert("Invalid input for decoding!");
             }
         }
-
-        // Placeholder for game logic - You will need to implement the game using JavaScript (e.g., Phaser.js)
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-
-        // Simple example: Drawing a square to test the canvas
-        function draw() {
-            ctx.fillStyle = "#FF0000";
-            ctx.fillRect(0, 0, 800, 600);
-        }
-
-        draw(); // Call this to test the canvas drawing
     </script>
+
+    <!-- Link to the game JavaScript file -->
+    <script src="hide_seek_game_web.js"></script>
 </body>
 </html>
 
